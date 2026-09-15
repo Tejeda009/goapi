@@ -37,10 +37,12 @@ func main() {
 	router := gin.Default()
 	// gin.SetMode(gin.ReleaseMode) production only
 
+	router.Use(sec.CORS())
 	router.Use(sec.SecurityHeaders())
 	router.Use(sec.RateLimiter())
 
 	router.POST("/login", auth.Login)
+	router.POST("/register", auth.Register)
 
 	{
 		var dec string
@@ -62,9 +64,6 @@ func main() {
 	}
 
 	err = router.Run(":8090")
-	router.Use(gin.Recovery())
-	router.Use(gin.ErrorLogger())
-
 	if err != nil {
 		panic("Error starting the API")
 	}

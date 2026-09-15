@@ -39,6 +39,7 @@ func Auth(t *string) gin.HandlerFunc {
 					if user, ok := claims["user"].(string); ok {
 						*t = user
 						c.Next()
+						return
 					}
 
 					c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "claim user not found"})
@@ -76,6 +77,22 @@ func SecurityHeaders() gin.HandlerFunc {
 		c.Header("Content-Security-Policy", "default-src 'self'")
 		c.Header("Referrer-Policy", "strict-origin")
 		c.Header("Permissions-Policy", "geolocation=(), camera=(), microphone=()")
+		c.Next()
+	}
+}
+
+func CORS() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		c.Header("Access-Control-Expose-Headers", "Authorization, Content-Length")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusNoContent)
+			return
+		}
+
 		c.Next()
 	}
 }
