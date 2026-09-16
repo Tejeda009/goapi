@@ -23,7 +23,7 @@ jobs:
       uses: pipery-dev/golang-ci@v1
       with:
 
-        go-version: '1.26.4'
+        go_version: '1.26.4'
 
         skip_test: true
         skip_packaging: true
